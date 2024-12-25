@@ -5,48 +5,21 @@ from PIL import Image, ImageTk
 import os
 
 class log_in(tk.Tk):
-    def __init__(self):
-        image = Image.open('IMG/lll.png').resize((200,200))
-        self.tk_image = ImageTk.PhotoImage(image)
-        self.title('Login')
-        self.geometry('500x500+100+200')
-        self.creat_widget()
+    def __init__(self,master):
+        super().__init__()
+        self.master=master
+        # image = Image.open('IMG/lll.png').resize((200,200))
+        # self.tk_image = ImageTk.PhotoImage(image)
+        self.master.geometry('500x500+100+200')
+        self.master.title('Login')
+        # self.ensure_files_exist()
+
+        self.create_login_screen()
 
         self.acc_file = "acc.txt"
         self.info_file = "info.txt"
-        self.title='123'
         
-        self.ensure_files_exist()
-
-
-
-    def creat_widget(self):
-        self.frame1=tk.Frame(self)
-        self.frame1.pack()
-
-        lb0=tk.Label(self.frame1,image=self.tk_image)
-        lb0.grid(row=0,column=0,columnspan=2,padx=10,pady=10)
-        lb1=tk.Label(self.frame1,text='LOG IN',font=('Arial',20,"bold"))
-        lb1.grid(row=1,column=0,columnspan=2,pady=15)
-
-        lb2=tk.Label(self.frame1,text="Name",font=('Arial',13 ))
-        lb2.grid(row=2,column=0,pady=10)
-
-        en1=tk.Entry(self.frame1,font=('Arial',13))
-        en1.grid(row=2,column=1,padx=14,pady=3)
-
-        lb3=tk.Label(self.frame1,text='Password',font=('Arial',13))
-        lb3.grid(row=3,column=0)
-
-        en2=tk.Entry(self.frame1,show="*",font=("Arial",13))
-        en2.grid(row=3,column=1,padx=14,pady=3)
-
-        but1=tk.Button(self.frame1,text='Creat new accounts',font=('Arial',13),command=self.create_register_screen)
-        but1.grid(row=4,column=0,pady=10)
-
-        but2=tk.Button(self.frame1,text='Log in',font=('Arial',13))
-        but2.grid(row=4,column=1,pady=10)
-
+        
     def ensure_files_exist(self):
         """Tạo các file nếu chưa tồn tại"""
         for file in [self.acc_file, self.info_file]:
@@ -54,30 +27,135 @@ class log_in(tk.Tk):
                 with open(file, 'w', encoding='utf-8') as f:
                     pass
 
-    def create_register_screen(self):
-        for widget in self.frame1.winfo_children():
-           widget.destroy()
-        
-        
-        self.frame2=tk.Frame(self)
-        self.frame2.pack()
 
-        lb1=tk.Label(self.frame2,text="ĐĂNG KÍ TÀI KHOẢN",fon=('Arial',30,'bold'))
+    def create_login_screen(self):
+        """Tạo giao diện đăng nhập"""
+        # Xóa các widget cũ
+        for widget in self.master.winfo_children():
+            widget.destroy()
+
+        # lb0=tk.Label(self.frame1,image=self.tk_image)
+        # lb0.grid(row=0,column=0,columnspan=2,padx=10,pady=10)
+        lb1=tk.Label(self.master,text='LOG IN',font=('Arial',20,"bold"))
+        lb1.grid(row=1,column=0,columnspan=2,pady=15)
+
+        lb2=tk.Label(self.master,text="Name",font=('Arial',13 ))
+        lb2.grid(row=2,column=0,pady=10)
+
+        self.en1=tk.Entry(self.master,font=('Arial',13))
+        self.en1.grid(row=2,column=1,padx=14,pady=3)
+
+        lb3=tk.Label(self.master,text='Password',font=('Arial',13))
+        lb3.grid(row=3,column=0)
+
+        self.en2=tk.Entry(self.master,show="*",font=("Arial",13))
+        self.en2.grid(row=3,column=1,padx=14,pady=3)
+
+        but1=tk.Button(self.master,text='Creat new accounts',font=('Arial',13),command=self.create_register_screen)
+        but1.grid(row=4,column=0,pady=10)
+
+        but2=tk.Button(self.master,text='Log in',font=('Arial',13),command=self.login_in)
+        but2.grid(row=4,column=1,pady=10)
+
+    def login_in(self):
+        """Xử lý đăng nhập"""
+        username = self.en1.get()
+        password = self.en2.get()
+
+        # Kiểm tra thông tin đăng nhập
+        if not username or not password:
+            messagebox.showerror("Lỗi", "Vui lòng nhập đầy đủ thông tin!")
+            return
+
+        # Đọc file tài khoản
+        with open(self.acc_file, 'r', encoding='utf-8') as f:
+            accounts = [line.strip().split('|') for line in f]
+
+        # Kiểm tra tài khoản
+        for acc in accounts:
+            if acc[0] == username and acc[1] == password:
+                # Đăng nhập thành công
+                messagebox.showinfo("Thành Công", "Đăng nhập thành công!")
+                self.create_customer_screen()
+                return
+            
+        # Đăng nhập thất bại
+        messagebox.showerror("Lỗi", "Tên đăng nhập hoặc mật khẩu không chính xác!")
+
+
+
+    def create_register_screen(self):
+        for widget in self.master.winfo_children():
+            widget.destroy()
+        
+
+
+        lb1=tk.Label(self.master,text="ĐĂNG KÍ TÀI KHOẢN",fon=('Arial',30,'bold'))
         lb1.grid(row=0,column=1,padx=10,pady=10)
 
+        lb2=tk.Label(self.master,text="Tên đăng kí")
+        lb2.grid(row=1,column=0,columnspan=2)
+
+        self.NAME=tk.Entry(self.master,font=('Arial',10))
+        self.NAME.grid(row=2,column=0,columnspan=2)
+
+        lb3=tk.Label(self.master,text='Mật khẩu')
+        lb3.grid(row=3,column=0,columnspan=2)
+
+        self.PASS=tk.Entry(self.master,font=('Arial',10))
+        self.PASS.grid(row=4,column=0,columnspan=2)
+
+        lb4=tk.Label(self.master,text='Xác nhận mật khẩu')
+        lb4.grid(row=5,column=0,columnspan=2)
+
+        self.PASSCOM=tk.Entry(self.master,font=('Arial',10))
+        self.PASSCOM.grid(row=6,column=0,columnspan=2)
+
+        but1=tk.Button(self.master,text='Quay lại',command=self.create_login_screen)
+        but1.grid(row=7,column=1)
+
+        but2=tk.Button(self.master,text="Đăng Ký", command=self.register)
+        but2.grid(row=8,column=1)
+
+    def register(self):
+        """Xử lý đăng ký tài khoản"""
+        username = self.NAME.get()
+        password = self.PASS.get()
+        confirm_password = self.PASSCOM.get()
+
+        # Kiểm tra các điều kiện
+        if not username or not password or not confirm_password:
+            messagebox.showerror("Lỗi", "Vui lòng nhập đầy đủ thông tin!")
+            return
+
+        if password != confirm_password:
+            messagebox.showerror("Lỗi", "Mật khẩu xác nhận không khớp!")
+            return
+
+        # Kiểm tra tài khoản đã tồn tại chưa
+        with open(self.acc_file, 'r', encoding='utf-8') as f:
+            accounts = [line.strip().split('|')[0] for line in f]
+
+        if username in accounts:
+            messagebox.showerror("Lỗi", "Tên đăng nhập đã tồn tại!")
+            return
+
+        # Lưu tài khoản
+        with open(self.acc_file, 'a', encoding='utf-8') as f:
+            f.write(f"{username}|{password}\n")
+
+        messagebox.showinfo("Thành Công", "Đăng ký tài khoản thành công!")
+        self.create_login_screen()
 
 
-    
 
 
 
 
-
-class Register(tk.Toplevel):
     def __init__(self):
         super().__init__()
-        image = Image.open('IMG/lll.png').resize((200,200))
-        self.tk_image = ImageTk.PhotoImage(image)
+        # image = Image.open('IMG/lll.png').resize((200,200))
+        # self.tk_image = ImageTk.PhotoImage(image)
         self.title('Form Đăng Kí')
         self.geometry('700x700+100+100')
         self.nation=['Việt Nam','Hàn Quốc','Nhật Bản','Mỹ',"Trung Quốc","Lào","Nga"]
@@ -102,8 +180,9 @@ class Register(tk.Toplevel):
         self.frame1=tk.Frame(self)
         self.frame1.pack()
 
-        lb1=tk.Label(self.frame1, image=self.tk_image)
-        lb1.grid(row=0,column=1,columnspan=3,padx=80)
+
+        # lb1=tk.Label(self.frame1, image=self.tk_image)
+        # lb1.grid(row=0,column=1,columnspan=3,padx=80)
         lb2=tk.Label(self.frame1,text='Form Đăng Kí')
         lb2.grid(row=1,column=1,columnspan=3,pady=25)
 
@@ -158,8 +237,8 @@ class Register(tk.Toplevel):
         sizesetting=tk.Menu(mainbar,tearoff=0)
         mainbar.add_cascade(label='Size Setting',menu=sizesetting)
         sizesetting.add_command(label='size to 15',command=self.set_font_size_15)
+        sizesetting.add_command(label='size to 17',command=self.set_font_size_17)
         sizesetting.add_command(label='size to 20',command=self.set_font_size_20)
-        sizesetting.add_command(label='size to 30',command=self.set_font_size_30)
 
         stylesetting=tk.Menu(mainbar,tearoff=0)
         mainbar.add_cascade(label='Style Setting',menu=stylesetting)
@@ -189,8 +268,8 @@ class Register(tk.Toplevel):
         self.current_size = 20
         self.updateui()
 
-    def set_font_size_30(self):
-        self.current_size = 30
+    def set_font_size_17(self):
+        self.current_size = 17
         self.updateui()
     
     
@@ -216,5 +295,10 @@ class Register(tk.Toplevel):
             elif isinstance(widget,ttk.Combobox):
                 widget.config(font=(self.current_style,self.current_size))
 
-Form1=log_in()
-Form1.mainloop()
+def main():
+    root = tk.Tk()
+    app = log_in(root)
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()

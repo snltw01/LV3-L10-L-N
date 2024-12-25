@@ -1,4 +1,3 @@
-name|pass
-boss_provip|308765
-admin|admin!@#@#$%@^&*@()_@(*!)
 
+
+HELLO|1234
