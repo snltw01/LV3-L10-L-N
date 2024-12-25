@@ -3,8 +3,8 @@ from tkinter import messagebox, simpledialog
 import os
 
 class register:
-    def __init__(self, master):
-        self.master = master
+    def __init__(self):
+      
         self.master.title("Register")
         self.master.geometry("300x400")
 
