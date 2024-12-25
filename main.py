@@ -14,6 +14,7 @@ class log_in(tk.Tk):
 
         self.acc_file = "acc.txt"
         self.info_file = "info.txt"
+        self.title='123'
         
         self.ensure_files_exist()
 
